@@ -30,6 +30,7 @@ O objetivo do aplicativo é permitir o estudo e prática de conceitos fundamenta
      - Tipo do personagem (se disponível)
    - Desenvolvida com UIKit.
    - Permite navegação para a tela de detalhes ao selecionar um personagem.
+   - Permite a pesquisa de um personagem pelo nome através de uma Search Bar.
 
 2. **Tela de Detalhes do Personagem**:
    - Exibe informações detalhadas do personagem selecionado:
@@ -101,8 +102,15 @@ O objetivo do aplicativo é permitir o estudo e prática de conceitos fundamenta
 
 2. **Desenvolvimento da Tela de Lista**:
    - Criar o layout em UIKit.
-   - Configurar a lógica de paginação no Interactor.
+   - Configurar a lógica de paginação no Interactor
+     - será controlada de acordo com funcionamento da própria API que recebe 20 itens por página
+     - será criado um contador que será icrementado ao rolar view até o final, fazendo a requisição da página seguinte
+     - a requisição das imagens da API, acontecerá conforme as imagens foram exibidas na tela
+     - conforme os dados forem carregados, eles serão exibidos no cache.
    - Integrar Presenter e View para exibir os dados da API.
+   - Implementar a barra de pesquisa
+     - a pesquisa será realizada através da requisição de um novo endpoint que inclui o nome inserido na search bar
+     - `"https://rickandmortyapi.com/api/character/?name={nome}"` 
 
 3. **Desenvolvimento da Tela de Detalhes**:
    - Criar o layout em SwiftUI.
