@@ -10,15 +10,16 @@ import UIKit
 class CharactersListViewController: UIViewController {
     
     //MARK: Variables
+    let image = UIImage(named: "Rick")!
     let characters: [Character] = [
         Character(id: 0,
-                  name: "Rick",status: "Alive",species: "Human",type: "",gender: "",origin: Location(name: "", url: ""),location: Location(name: "", url: ""),image: UIImage(named: "Rick")!,episode: [],url: "",created: ""),
+                  name: "Rick",status: "Alive",species: "Human",type: "",gender: "",origin: Location(name: "", url: ""),location: Location(name: "", url: ""),image: "",episode: [],url: "",created: ""),
         Character(id: 1,
-               name: "Morty",status: "Morty",species: "Alien",type: "",gender: "",origin: Location(name: "", url: ""),location: Location(name: "", url: ""),image: UIImage(named: "Rick")!,episode: [],url: "",created: ""),
+               name: "Morty",status: "Morty",species: "Alien",type: "",gender: "",origin: Location(name: "", url: ""),location: Location(name: "", url: ""),image: "",episode: [],url: "",created: ""),
         Character(id: 2,
-               name: "Marge",status: "Marge",species: "Unknow",type: "",gender: "",origin: Location(name: "", url: ""),location: Location(name: "", url: ""),image: UIImage(named: "Rick")!,episode: [],url: "",created: ""),
+               name: "Marge",status: "Marge",species: "Unknow",type: "",gender: "",origin: Location(name: "", url: ""),location: Location(name: "", url: ""),image: "",episode: [],url: "",created: ""),
         Character(id: 3,
-               name: "Alice",status: "Alice",species: "Human",type: "",gender: "",origin: Location(name: "", url: ""),location: Location(name: "", url: ""),image: UIImage(named: "Rick")!,episode: [],url: "",created: "")
+               name: "Alice",status: "Alice",species: "Human",type: "",gender: "",origin: Location(name: "", url: ""),location: Location(name: "", url: ""),image: "",episode: [],url: "",created: "")
     ]
     
     //MARK: UIComponents
@@ -75,7 +76,7 @@ extension CharactersListViewController: UITableViewDelegate, UITableViewDataSour
         }
         
         let characterInfo = self.characters[indexPath.row]
-        cell.configure(image: characterInfo.image, name: characterInfo.name, specie: characterInfo.species)
+        cell.configure(image: self.image, name: characterInfo.name, specie: characterInfo.species)
 
         return cell
     }
