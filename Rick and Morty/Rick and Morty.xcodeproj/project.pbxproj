@@ -33,7 +33,7 @@
 		7AA28F052D078981009DADD6 /* Exceptions for "Rick and Morty" folder in "Rick and Morty" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Application/Info.plist,
 			);
 			target = 7AA28EDC2D078980009DADD6 /* Rick and Morty */;
 		};

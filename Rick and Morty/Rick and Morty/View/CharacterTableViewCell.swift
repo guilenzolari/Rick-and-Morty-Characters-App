@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CustomCell: UITableViewCell {
+class CharacterTableViewCell: UITableViewCell {
     
     static let identifier = "CustomCell"
     
