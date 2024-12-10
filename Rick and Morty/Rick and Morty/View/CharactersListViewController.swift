@@ -31,9 +31,16 @@ class CharactersListViewController: UIViewController {
         return tableView
     }()
     
+    private func setupNavigationBar(){
+        self.navigationItem.title = "Characters"
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationItem.largeTitleDisplayMode = .always
+    }
+    
     //MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.setupNavigationBar()
         self.setupUI()
         
         self.tableView.delegate = self
