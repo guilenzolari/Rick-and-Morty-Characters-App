@@ -7,17 +7,17 @@
 
 import Foundation
 
-class APIService: APIServiceProtocol {
+final class APIService: APIServiceProtocol {
     
     init(url: String) {
-        self.url = url
+        self.urlString = url
     }
     
-    private let url: String
+    var urlString: String
     
-    public func fetchData<T: Decodable>(completion: @escaping (Result<[T], APIError>) -> () ){
+    public func fetchData<T: Codable>(completion: @escaping (Result<T, APIError>) -> () ){
         
-        guard let url = URL(string: url) else {
+        guard let url = URL(string: urlString) else {
             let error = APIError.badURL
             completion(Result.failure(error))
             return
@@ -34,7 +34,7 @@ class APIService: APIServiceProtocol {
                 completion(Result.failure(APIError.badResponse(response.statusCode)))
             } else if let data = data {
                 do {
-                    let result = try JSONDecoder().decode([T].self, from: data)
+                    let result = try JSONDecoder().decode(T.self, from: data)
                         completion(Result.success(result))
                 } catch {
                     completion(Result.failure(.decoding(error as? DecodingError)))
@@ -46,5 +46,10 @@ class APIService: APIServiceProtocol {
 }
 
 protocol APIServiceProtocol {
-    func fetchData<T: Decodable>(completion: @escaping (Result<[T], APIError>) -> ())
+    func fetchData<T: Codable>(completion: @escaping (Result<T, APIError>) -> ())
+    var urlString: String { get set }
+}
+
+enum Endpoint: String {
+    case character = "https://rickandmortyapi.com/api/character"
 }

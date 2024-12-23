@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 // MARK: - Welcome
-struct Welcome {
+struct Welcome: Codable {
     let info: Info
     let results: [Character]
 }
@@ -14,7 +14,7 @@ struct Info: Codable {
 }
 
 // MARK: - Result
-struct Character: Decodable {
+struct Character: Codable {
     let id: Int
     let name: String
     let status: String

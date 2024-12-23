@@ -7,20 +7,16 @@
 
 import UIKit
 
-class CharactersListViewController: UIViewController {
-    
+protocol CharacterListViewProtocol: AnyObject {
+    func updateCharacterList(with characters: [Character])
+    func displayError(message: String)
+}
+
+final class CharactersListViewController: UIViewController {
+
     //MARK: Variables
-    let image = UIImage(named: "Rick")!
-    let characters: [Character] = [
-        Character(id: 0,
-                  name: "Rick",status: "Alive",species: "Human",type: "",gender: "",origin: Location(name: "", url: ""),location: Location(name: "", url: ""),image: "",episode: [],url: "",created: ""),
-        Character(id: 1,
-               name: "Morty",status: "Morty",species: "Alien",type: "",gender: "",origin: Location(name: "", url: ""),location: Location(name: "", url: ""),image: "",episode: [],url: "",created: ""),
-        Character(id: 2,
-               name: "Marge",status: "Marge",species: "Unknow",type: "",gender: "",origin: Location(name: "", url: ""),location: Location(name: "", url: ""),image: "",episode: [],url: "",created: ""),
-        Character(id: 3,
-               name: "Alice",status: "Alice",species: "Human",type: "",gender: "",origin: Location(name: "", url: ""),location: Location(name: "", url: ""),image: "",episode: [],url: "",created: "")
-    ]
+    var presenter: CharacterListPresenter?
+    private let image = UIImage(named: "Rick")!
     
     //MARK: UIComponents
     private let tableView: UITableView = {
@@ -43,6 +39,7 @@ class CharactersListViewController: UIViewController {
         super.viewDidLoad()
         self.setupNavigationBar()
         self.setupUI()
+        self.presenter?.fetchCharacters()
         
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -67,7 +64,7 @@ class CharactersListViewController: UIViewController {
 
 extension CharactersListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.characters.count
+        return self.presenter?.characters.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -75,9 +72,9 @@ extension CharactersListViewController: UITableViewDelegate, UITableViewDataSour
             fatalError("The table view could not dequeue a Custom Cell in ViewController")
         }
         
-        let characterInfo = self.characters[indexPath.row]
-        cell.configure(image: self.image, name: characterInfo.name, specie: characterInfo.species)
-
+        let characterInfo = self.presenter?.characters[indexPath.row]
+        cell.configure(image: self.image, name: characterInfo?.name ?? "Name Unavailable", specie: characterInfo?.species ?? "Especie Unavailable")
+        
         return cell
     }
     
@@ -85,5 +82,17 @@ extension CharactersListViewController: UITableViewDelegate, UITableViewDataSour
         tableView.deselectRow(at: indexPath, animated: true)
         print(indexPath.row)
     }
-    
 }
+
+extension CharactersListViewController:CharacterListViewProtocol {
+    func updateCharacterList(with characters: [Character]) {
+        
+    }
+    
+    func displayError(message: String) {
+        
+    }
+}
+
+
+
