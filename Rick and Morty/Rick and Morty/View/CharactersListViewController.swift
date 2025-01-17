@@ -13,7 +13,7 @@ protocol CharacterListViewProtocol: AnyObject {
 }
 
 final class CharactersListViewController: UIViewController {
-
+    
     //MARK: Variables
     var presenter: CharacterListPresenter?
     private let image = UIImage(named: "Rick")!
@@ -84,12 +84,20 @@ extension CharactersListViewController: UITableViewDelegate, UITableViewDataSour
     }
 }
 
-extension CharactersListViewController:CharacterListViewProtocol {
+extension CharactersListViewController: CharacterListViewProtocol {
     func updateCharacterList(with characters: [Character]) {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
         
     }
     
     func displayError(message: String) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
         
     }
 }

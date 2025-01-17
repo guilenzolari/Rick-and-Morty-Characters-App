@@ -6,7 +6,7 @@
 //
 
 final class CharacterListPresenter: CharacterListPresenterProtocol {
-    private let interactor: CharacterListInteractorProtocol
+    let interactor: CharacterListInteractorProtocol
     weak var viewController: CharacterListViewProtocol?
     var characters: [Character] = []
     
@@ -23,7 +23,6 @@ final class CharacterListPresenter: CharacterListPresenterProtocol {
             case .success(let welcome):
                 self?.characters = welcome.results
                 self?.viewController?.updateCharacterList(with: welcome.results)
-                print(welcome.results)
             case .failure(let error):
                 self?.viewController?.displayError(message: error.localizedDescription)
             }
