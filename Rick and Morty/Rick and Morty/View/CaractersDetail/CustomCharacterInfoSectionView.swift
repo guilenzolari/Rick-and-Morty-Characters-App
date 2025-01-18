@@ -13,22 +13,18 @@ struct CustomCharacterInfoSectionView: View {
     var info: String
     
     var body: some View {
-        VStack {
+        HStack {
             HStack {
                 Text(Image(systemName: symbol))
                 Text(sectionName)
-                Spacer()
             }.foregroundStyle(.secondary)
             
+            Spacer()
+            
             HStack {
-                Spacer()
                 Text(info)
-                    .font(.title2)
-                    .padding()
-                Spacer()
             }
         }
-        .cornerRadius(12)
     }
 }
 

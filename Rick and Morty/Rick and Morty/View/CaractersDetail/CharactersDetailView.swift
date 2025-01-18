@@ -10,31 +10,43 @@ import SwiftUI
 struct CharactersDetailView: View {
     var character: Character
     var image: UIImage?
+    let casesOfError: [String] = ["unknown", ""]
+    
+    private var characterInfo: [(symbol: String, title: String, value: String)] {
+        [
+            ("heart.fill", "Status", character.status),
+            ("person.fill", "Specie", character.species),
+            ("figure.stand.dress.line.vertical.figure", "Gender", character.gender),
+            ("questionmark.circle.fill", "Type", character.type),
+            ("globe", "Origin", character.origin.name),
+            ("house.fill", "Location", character.location.name)
+        ]
+            .filter { !casesOfError.contains($0.value)}
+    }
     
     var body: some View {
-        NavigationStack {
             List {
-                
                 if let image = self.image {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: screenWidth(),
-                               height: screenHeight() / 3)
+                        .frame(width: screenWidth(), height: screenHeight() / 3)
                         .clipped()
                         .cornerRadius(30)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                         .listRowBackground(Color.clear)
                 }
-
-                CharactersInfoGridView()
                 
+                Section {
+                    ForEach(characterInfo, id: \.title) { info in
+                        CustomCharacterInfoSectionView(
+                            symbol: info.symbol,
+                            sectionName: info.title,
+                            info: info.value
+                        ).padding()
+                    }
+                }
             }
             .navigationTitle(character.name)
-            .navigationBarTitleDisplayMode(.inline)
-        }
     }
-}
-
-#Preview {
-//    CharactersDetailView(image: "Rick", caracterName: "Rick Sanchez")
 }
