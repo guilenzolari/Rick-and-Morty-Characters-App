@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 protocol CharacterListViewProtocol: AnyObject {
     func updateCharacterList(with characters: [Character])
@@ -80,7 +81,13 @@ extension CharactersListViewController: UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        print(indexPath.row)
+
+        guard let character = presenter?.characters[indexPath.row] else {return}
+        
+        let characterDetailView = CharactersDetailView(character: character, image: image)
+        let hostingController = UIHostingController(rootView: characterDetailView)
+        
+        self.navigationController?.pushViewController(hostingController, animated: true)
     }
 }
 

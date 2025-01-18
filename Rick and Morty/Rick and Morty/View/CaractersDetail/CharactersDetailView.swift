@@ -8,31 +8,33 @@
 import SwiftUI
 
 struct CharactersDetailView: View {
-    var image: String
-    let padding: CGFloat = 16
-    var caracterName: String
+    var character: Character
+    var image: UIImage?
     
     var body: some View {
         NavigationStack {
             List {
-                Image(image)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: screenWidth() - 2 * padding,
-                           height: screenHeight() / 3)
-                    .clipped()
-                    .cornerRadius(30)
-                    .listRowBackground(Color.clear)
                 
+                if let image = self.image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: screenWidth(),
+                               height: screenHeight() / 3)
+                        .clipped()
+                        .cornerRadius(30)
+                        .listRowBackground(Color.clear)
+                }
+
                 CharactersInfoGridView()
                 
             }
-            .navigationTitle(caracterName)
+            .navigationTitle(character.name)
             .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
 
 #Preview {
-    CharactersDetailView(image: "Rick", caracterName: "Rick Sanchez")
+//    CharactersDetailView(image: "Rick", caracterName: "Rick Sanchez")
 }
