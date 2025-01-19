@@ -26,8 +26,8 @@ struct CharactersDetailView: View {
     
     var body: some View {
             List {
-                if let image = self.image {
-                    Image(uiImage: image)
+                if image != UIImage(systemName: "person.circle.fill")! {
+                    Image(uiImage: image ?? UIImage(systemName: "person.circle.fill")!)
                         .resizable()
                         .scaledToFill()
                         .frame(width: screenWidth(), height: screenHeight() / 3)

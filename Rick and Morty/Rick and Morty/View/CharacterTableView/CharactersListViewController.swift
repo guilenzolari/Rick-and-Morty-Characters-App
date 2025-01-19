@@ -17,7 +17,7 @@ final class CharactersListViewController: UIViewController {
     
     //MARK: Variables
     var presenter: CharacterListPresenter?
-    private let image = UIImage(named: "Rick")!
+    private let image = UIImage(systemName: "person.circle.fill")!
     
     //MARK: UIComponents
     private let tableView: UITableView = {

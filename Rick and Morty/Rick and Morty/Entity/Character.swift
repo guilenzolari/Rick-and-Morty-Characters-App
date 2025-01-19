@@ -23,7 +23,9 @@ struct Character: Codable {
     let gender: String
     let origin, location: Location
     let image: String
-    let url: String
+    var url: URL? {
+        return URL(string: "https://rickandmortyapi.com/api/character/avatar/\(id).jpeg")
+    }
     let created: String
 }
 
