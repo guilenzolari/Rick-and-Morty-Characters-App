@@ -11,6 +11,7 @@ final class CharacterListPresenter: CharacterListPresenterProtocol {
     weak var viewController: CharacterListViewProtocol?
     var characters: [Character] = []
     var imageCache: [Int: UIImage] = [:]
+    var countOfPaginations: Int = 2
     
     init(
         interactor: CharacterListInteractorProtocol
@@ -23,8 +24,12 @@ final class CharacterListPresenter: CharacterListPresenterProtocol {
         interactor.fetchCharacterList { [weak self] result in
             switch result {
             case .success(let welcome):
-                self?.characters.append(contentsOf: welcome.results)
-                self?.viewController?.updateCharacterList(with: welcome.results)
+                if self!.countOfPaginations <= welcome.info.pages {
+                    self?.countOfPaginations += 1
+                    self?.characters.append(contentsOf: welcome.results)
+                    self?.viewController?.updateCharacterList(with: welcome.results)
+                    print(self!.countOfPaginations)
+                }
             case .failure(let error):
                 print("falho: \(error)")
                 self?.viewController?.displayError(message: error.localizedDescription)
