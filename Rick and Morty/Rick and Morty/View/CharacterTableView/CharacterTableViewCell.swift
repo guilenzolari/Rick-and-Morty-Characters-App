@@ -11,11 +11,11 @@ class CharacterTableViewCell: UITableViewCell {
     
     static let identifier = "CustomCell"
     
-    private let myImageView: UIImageView = {
+    private let characterImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.image = UIImage(systemName: "questionmark")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.tintColor = .label
         return imageView
     }()
@@ -57,38 +57,42 @@ class CharacterTableViewCell: UITableViewCell {
     }
     
     public func configure(image: UIImage, name: String, specie: String) {
-        self.myImageView.image = image
         self.characterName.text = name
         self.characterSpecie.text = specie
+        self.characterImageView.image = image
+    }
+    
+    func updateImage(_ image: UIImage?) {
+        characterImageView.image = image
     }
     
     private func setupUI() {
-        self.contentView.addSubview(myImageView)
+        self.contentView.addSubview(characterImageView)
         self.contentView.addSubview(characterName)
         self.contentView.addSubview(characterSpecie)
         self.contentView.addSubview(chevronImageView)
         
-        myImageView.translatesAutoresizingMaskIntoConstraints = false
+        characterImageView.translatesAutoresizingMaskIntoConstraints = false
         characterName.translatesAutoresizingMaskIntoConstraints = false
         characterSpecie.translatesAutoresizingMaskIntoConstraints = false
         chevronImageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             // Constraints para myImageView
-            myImageView.topAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.topAnchor),
-            myImageView.bottomAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.bottomAnchor),
-            myImageView.leadingAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.leadingAnchor),
-            myImageView.heightAnchor.constraint(equalToConstant: 60),
-            myImageView.widthAnchor.constraint(equalToConstant: 60),
+            characterImageView.topAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.topAnchor),
+            characterImageView.bottomAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.bottomAnchor),
+            characterImageView.leadingAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.leadingAnchor),
+            characterImageView.heightAnchor.constraint(equalToConstant: 60),
+            characterImageView.widthAnchor.constraint(equalToConstant: 60),
             
             // Constraints para characterName
-            characterName.leadingAnchor.constraint(equalTo: self.myImageView.trailingAnchor, constant: 16),
+            characterName.leadingAnchor.constraint(equalTo: self.characterImageView.trailingAnchor, constant: 16),
             characterName.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -12),
             characterName.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: -20),
             characterName.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor),
             
             // Constraints para characterSpecie
-            characterSpecie.leadingAnchor.constraint(equalTo: self.myImageView.trailingAnchor, constant: 16),
+            characterSpecie.leadingAnchor.constraint(equalTo: self.characterImageView.trailingAnchor, constant: 16),
             characterSpecie.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -12),
             characterSpecie.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 20),
             characterSpecie.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 9),
@@ -102,8 +106,8 @@ class CharacterTableViewCell: UITableViewCell {
         ])
         
         // Tornando a imagem redonda
-        myImageView.layer.cornerRadius = 30 // Metade da largura/altura
-        myImageView.clipsToBounds = true
+        characterImageView.layer.cornerRadius = 30 // Metade da largura/altura
+        characterImageView.clipsToBounds = true
         
     }
 }

@@ -9,8 +9,9 @@ import SwiftUI
 
 struct CharactersDetailView: View {
     var character: Character
-    var image: UIImage?
     let casesOfError: [String] = ["unknown", ""]
+    var presenter: CharacterListPresenter?
+    var indexPath: Int
     
     private var characterInfo: [(symbol: String, title: String, value: String)] {
         [
@@ -26,16 +27,19 @@ struct CharactersDetailView: View {
     
     var body: some View {
             List {
-                if image != UIImage(systemName: "person.circle.fill")! {
-                    Image(uiImage: image ?? UIImage(systemName: "person.circle.fill")!)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: screenWidth(), height: screenHeight() / 3)
-                        .clipped()
-                        .cornerRadius(30)
-                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                        .listRowBackground(Color.clear)
+                if let presenter = self.presenter {
+                    if let image = presenter.imageCache[self.indexPath] {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: screenWidth(), height: screenHeight() / 3)
+                            .clipped()
+                            .cornerRadius(30)
+                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                            .listRowBackground(Color.clear)
+                    }
                 }
+
                 
                 Section {
                     ForEach(characterInfo, id: \.title) { info in

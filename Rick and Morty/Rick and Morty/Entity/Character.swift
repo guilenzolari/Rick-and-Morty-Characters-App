@@ -22,11 +22,19 @@ struct Character: Codable {
     let type: String
     let gender: String
     let origin, location: Location
-    let image: String
-    var url: URL? {
-        return URL(string: "https://rickandmortyapi.com/api/character/avatar/\(id).jpeg")
-    }
-    let created: String
+    let imageURL: String
+    
+    enum CodingKeys: String, CodingKey {
+            case id = "id"
+            case name = "name"
+            case status = "status"
+            case species = "species"
+            case type = "type"
+            case gender = "gender"
+            case origin = "origin"
+            case location = "location"
+            case imageURL = "image"            
+        }
 }
 
 // MARK: - Location

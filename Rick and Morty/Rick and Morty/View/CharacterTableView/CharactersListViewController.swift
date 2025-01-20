@@ -74,7 +74,15 @@ extension CharactersListViewController: UITableViewDelegate, UITableViewDataSour
         }
         
         let characterInfo = self.presenter?.characters[indexPath.row]
-        cell.configure(image: self.image, name: characterInfo?.name ?? "Name Unavailable", specie: characterInfo?.species ?? "Especie Unavailable")
+        cell.configure(image: self.image, name: characterInfo?.name ?? "Character Unavailable", specie: characterInfo?.species ?? "Specie Unavailable")
+ 
+        if let character = characterInfo {
+            presenter?.fetchCharacterImage(for: character, completion: { [weak cell] image in
+                DispatchQueue.main.async {
+                    cell?.updateImage(image)
+                }
+            })
+        }
         
         return cell
     }
@@ -84,7 +92,7 @@ extension CharactersListViewController: UITableViewDelegate, UITableViewDataSour
 
         guard let character = presenter?.characters[indexPath.row] else {return}
         
-        let characterDetailView = CharactersDetailView(character: character, image: image)
+        let characterDetailView = CharactersDetailView(character: character, presenter: self.presenter, indexPath: indexPath.row + 1)
         let hostingController = UIHostingController(rootView: characterDetailView)
         
         self.navigationController?.pushViewController(hostingController, animated: true)
