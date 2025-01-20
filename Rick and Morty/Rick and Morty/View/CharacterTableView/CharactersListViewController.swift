@@ -18,6 +18,7 @@ final class CharactersListViewController: UIViewController {
     //MARK: Variables
     var presenter: CharacterListPresenter?
     private let image = UIImage(systemName: "person.circle.fill")!
+    private var isLoadingMoreData = false
     
     //MARK: UIComponents
     private let tableView: UITableView = {
@@ -63,6 +64,23 @@ final class CharactersListViewController: UIViewController {
     }
 }
 
+extension CharactersListViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.size.height
+        
+        if offsetY > contentHeight - height - 100 {
+
+            if !isLoadingMoreData {
+                isLoadingMoreData = true
+                presenter?.fetchCharacters()
+                isLoadingMoreData = false
+            }
+        }
+    }
+}
+
 extension CharactersListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.presenter?.characters.count ?? 0
@@ -92,7 +110,7 @@ extension CharactersListViewController: UITableViewDelegate, UITableViewDataSour
 
         guard let character = presenter?.characters[indexPath.row] else {return}
         
-        let characterDetailView = CharactersDetailView(character: character, presenter: self.presenter, indexPath: indexPath.row + 1)
+        let characterDetailView = CharactersDetailView(character: character, presenter: self.presenter, indexPath: character.id)
         let hostingController = UIHostingController(rootView: characterDetailView)
         
         self.navigationController?.pushViewController(hostingController, animated: true)
