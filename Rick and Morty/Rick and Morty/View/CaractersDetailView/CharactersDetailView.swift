@@ -11,7 +11,6 @@ struct CharactersDetailView: View {
     var character: Character
     let casesOfError: [String] = ["unknown", ""]
     var presenter: CharacterListPresenter?
-    var indexPath: Int
     
     private var characterInfo: [(symbol: String, title: String, value: String)] {
         [
@@ -28,7 +27,7 @@ struct CharactersDetailView: View {
     var body: some View {
             List {
                 if let presenter = self.presenter {
-                    if let image = presenter.imageCache[self.indexPath] {
+                    if let image = presenter.imageCache[self.character.id] {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFill()

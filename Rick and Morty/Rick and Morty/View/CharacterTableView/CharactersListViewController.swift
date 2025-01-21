@@ -19,12 +19,17 @@ final class CharactersListViewController: UIViewController {
     var presenter: CharacterListPresenter?
     private let image = UIImage(systemName: "person.circle.fill")!
     private var isLoadingMoreData = false
+    private var filteredCharacters: [Character] = []
+    private var isFiltering: Bool {
+        return !(searchBar.text?.isEmpty ?? true)
+    }
     
     //MARK: UIComponents
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .systemBackground
         tableView.allowsSelection = true
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(CharacterTableViewCell.self, forCellReuseIdentifier: CharacterTableViewCell.identifier)
         
         return tableView
@@ -35,6 +40,14 @@ final class CharactersListViewController: UIViewController {
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationItem.largeTitleDisplayMode = .always
     }
+    
+    private let searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        searchBar.placeholder = "Search Characters"
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.showsCancelButton = true
+        return searchBar
+    }()
     
     //MARK: Lifecycle
     override func viewDidLoad() {
@@ -52,10 +65,16 @@ final class CharactersListViewController: UIViewController {
         self.view.backgroundColor = .systemBackground
         
         self.view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(searchBar)
+        
+        searchBar.delegate = self
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            searchBar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            searchBar.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
+            searchBar.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
+            
+            tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor)
@@ -65,6 +84,10 @@ final class CharactersListViewController: UIViewController {
 }
 
 extension CharactersListViewController: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        searchBar.resignFirstResponder()
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
@@ -83,7 +106,7 @@ extension CharactersListViewController: UIScrollViewDelegate {
 
 extension CharactersListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.presenter?.characters.count ?? 0
+        return isFiltering ? filteredCharacters.count : presenter?.characters.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -91,7 +114,7 @@ extension CharactersListViewController: UITableViewDelegate, UITableViewDataSour
             fatalError("The table view could not dequeue a Custom Cell in ViewController")
         }
         
-        let characterInfo = self.presenter?.characters[indexPath.row]
+        let characterInfo = isFiltering ? filteredCharacters[indexPath.row] : presenter?.characters[indexPath.row]
         cell.configure(image: self.image, name: characterInfo?.name ?? "Character Unavailable", specie: characterInfo?.species ?? "Specie Unavailable")
  
         if let character = characterInfo {
@@ -108,12 +131,38 @@ extension CharactersListViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        guard let character = presenter?.characters[indexPath.row] else {return}
+        let character = isFiltering ? filteredCharacters[indexPath.row] : presenter?.characters[indexPath.row]
         
-        let characterDetailView = CharactersDetailView(character: character, presenter: self.presenter, indexPath: character.id)
+        guard let selectedCharacter = character else { return }
+        
+        let characterDetailView = CharactersDetailView(
+            character: selectedCharacter,
+            presenter: self.presenter)
+        
         let hostingController = UIHostingController(rootView: characterDetailView)
         
         self.navigationController?.pushViewController(hostingController, animated: true)
+    }
+}
+
+extension CharactersListViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            filteredCharacters = []
+        } else {
+            filteredCharacters = presenter?.characters.filter {
+                $0.name.lowercased().contains(searchText.lowercased())
+            } ?? []
+        }
+        
+        tableView.reloadData()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        filteredCharacters = []
+        tableView.reloadData()
     }
 }
 
