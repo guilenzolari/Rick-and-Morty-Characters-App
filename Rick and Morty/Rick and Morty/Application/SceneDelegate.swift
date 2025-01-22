@@ -20,13 +20,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         
         // TODO: Criar uma factory com esses objetos e suas chamadas
-        let service = APIService(url: Endpoint.character.rawValue)
+        let service = APIService()
         let interactor = CharacterListInteractor(apiService: service)
         let presenter = CharacterListPresenter(interactor: interactor)
         
         let viewController = CharactersListViewController()
         presenter.viewController = viewController
-        interactor.presenter = presenter
         viewController.presenter = presenter
         
         let navigationViewController = UINavigationController(rootViewController: viewController)

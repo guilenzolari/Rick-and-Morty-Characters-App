@@ -8,19 +8,12 @@
 import Foundation
 
 protocol APIServiceProtocol {
-    func fetchData<T: Codable>(completion: @escaping (Result<T, APIError>) -> ())
-    var urlString: String { get set }
+    func fetchData<T: Codable>(urlString: String, completion: @escaping (Result<T, APIError>) -> () )
 }
 
 final class APIService: APIServiceProtocol {
-    
-    init(url: String) {
-        self.urlString = url
-    }
-    
-    var urlString: String
-    
-    public func fetchData<T: Codable>(completion: @escaping (Result<T, APIError>) -> () ){
+
+    public func fetchData<T: Codable>(urlString: String, completion: @escaping (Result<T, APIError>) -> () ){
         
         guard let url = URL(string: urlString) else {
             let error = APIError.badURL

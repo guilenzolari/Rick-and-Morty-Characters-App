@@ -11,19 +11,23 @@ protocol CharacterListInteractorProtocol: AnyObject {
 
 final class CharacterListInteractor: CharacterListInteractorProtocol {
     var apiService: APIServiceProtocol
-    var presenter: CharacterListPresenterProtocol?
+    var nextEndpoint: String?
     
-    init(apiService: APIServiceProtocol = APIService(url: Endpoint.character.rawValue)) {
+    init(apiService: APIServiceProtocol = APIService()) {
         self.apiService = apiService
+        self.nextEndpoint = Endpoint.character.rawValue
     }
     
     func fetchCharacterList(completion: @escaping (Result<Welcome, APIError>) -> Void) {
-        apiService.fetchData { [weak self] (result: Result<Welcome, APIError>) in
+        guard let currentEndpoint = self.nextEndpoint else {
+            completion(.failure(.badURL))
+            return
+        }
+        
+        apiService.fetchData(urlString: currentEndpoint) { [weak self] (result: Result<Welcome, APIError>) in
             switch result {
             case .success(let welcome):
-                if let nextEndpoint = welcome.info.next {
-                    self?.apiService.urlString = nextEndpoint
-                }
+                self?.nextEndpoint = welcome.info.next
                 completion(.success(welcome))
             case .failure(let error):
                 completion(.failure(error))
