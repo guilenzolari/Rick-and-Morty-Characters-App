@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "rick-and-morty-season-7-gets-rick-heavy-first-look-fall-rele_d9gq.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
