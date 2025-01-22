@@ -20,9 +20,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         
         // TODO: Criar uma factory com esses objetos e suas chamadas
+        let cache = CacheService()
         let service = APIService()
         let interactor = CharacterListInteractor(apiService: service)
-        let presenter = CharacterListPresenter(interactor: interactor)
+        let presenter = CharacterListPresenter(interactor: interactor, cache: cache)
         
         let viewController = CharactersListViewController()
         presenter.viewController = viewController

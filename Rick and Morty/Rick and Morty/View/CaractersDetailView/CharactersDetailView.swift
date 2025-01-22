@@ -27,7 +27,7 @@ struct CharactersDetailView: View {
     var body: some View {
             List {
                 if let presenter = self.presenter {
-                    if let image = presenter.imageCache[self.character.id] {
+                    if let image = presenter.cache.getImage(for: character.id) {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFill()

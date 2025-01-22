@@ -15,13 +15,15 @@ final class CharacterListPresenter: CharacterListPresenterProtocol {
     let interactor: CharacterListInteractorProtocol
     weak var viewController: CharacterListViewProtocol?
     var characters: [Character] = []
-    var imageCache: [Int: UIImage] = [:]
+    let cache: CacheServiceProtocol
     private var countOfPaginations: Int = 2
     
     init(
-        interactor: CharacterListInteractorProtocol
+        interactor: CharacterListInteractorProtocol,
+        cache: CacheServiceProtocol
     ) {
         self.interactor = interactor
+        self.cache = cache
     }
     
     func fetchCharacters() {
@@ -50,7 +52,7 @@ final class CharacterListPresenter: CharacterListPresenterProtocol {
     }
     
     func fetchCharacterImage(for character: Character, completion: @escaping (UIImage?) -> Void) {
-        if let cachedImage = imageCache[character.id] {
+        if let cachedImage = cache.getImage(for: character.id) {
             completion(cachedImage)
             return
         }
@@ -66,7 +68,7 @@ final class CharacterListPresenter: CharacterListPresenterProtocol {
                 return
             }
             
-            self.imageCache[character.id] = image
+            cache.setImage(value: image, for: character.id)
             completion(image)
         }
         task.resume()
