@@ -18,23 +18,14 @@ final class CharactersListViewController: UIViewController {
     //MARK: Variables
     var presenter: CharacterListPresenter?
     private let image = UIImage(systemName: "person.circle.fill")!
+    private let tableView = CharactersTableView()
+    
     private var isLoadingMoreData = false
     private var filteredCharacters: [Character] = []
     private var isFiltering: Bool {
         return !(searchBar.text?.isEmpty ?? true)
     }
-    
-    //MARK: UIComponents
-    private let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.backgroundColor = .systemBackground
-        tableView.allowsSelection = true
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(CharacterTableViewCell.self, forCellReuseIdentifier: CharacterTableViewCell.identifier)
-        
-        return tableView
-    }()
-    
+
     private func setupNavigationBar(){
         self.navigationItem.title = "Characters"
         self.navigationController?.navigationBar.prefersLargeTitles = true
@@ -49,6 +40,14 @@ final class CharactersListViewController: UIViewController {
         return searchBar
     }()
     
+    private let loadingIndicator: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView(style: .large)
+        activityIndicator.color = .gray
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        return activityIndicator
+    }()
+    
     //MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,17 +57,19 @@ final class CharactersListViewController: UIViewController {
         
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.searchBar.delegate = self
+        showLoading()
     }
     
     //MARK: Setup UI
     private func setupUI() {
-        self.view.backgroundColor = .systemBackground
-        
-        self.view.addSubview(tableView)
-        self.view.addSubview(searchBar)
-        
-        searchBar.delegate = self
-        
+        buildwHierarchy()
+        setupConstraint()
+    }
+}
+
+extension CharactersListViewController {
+    func setupConstraint() {
         NSLayoutConstraint.activate([
             searchBar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             searchBar.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
@@ -77,9 +78,18 @@ final class CharactersListViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor)
+            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            
+            loadingIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            loadingIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
         ])
-        
+    }
+    
+    func buildwHierarchy() {
+        self.view.backgroundColor = .systemBackground
+        self.view.addSubview(tableView)
+        self.view.addSubview(searchBar)
+        self.view.addSubview(loadingIndicator)
     }
 }
 
@@ -170,12 +180,26 @@ extension CharactersListViewController: CharacterListViewProtocol {
     func updateCharacterList(with characters: [Character]) {
         DispatchQueue.main.async {
             self.tableView.reloadData()
+            self.hideLoading()
         }
-        
     }
+    
+    private func showLoading() {
+        DispatchQueue.main.async {
+            self.loadingIndicator.startAnimating()
+        }
+    }
+
+    private func hideLoading() {
+        DispatchQueue.main.async {
+            self.loadingIndicator.stopAnimating()
+        }
+    }
+
     
     func displayError(message: String) {
         DispatchQueue.main.async {
+            self.hideLoading()
             let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             self.present(alert, animated: true, completion: nil)

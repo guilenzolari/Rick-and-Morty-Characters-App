@@ -6,35 +6,47 @@
 //
 import UIKit
 
+protocol CharacterListPresenterProtocol {
+    func fetchCharacters()
+    func fetchCharacterImage(for character: Character, completion: @escaping (UIImage?) -> Void)
+}
+
 final class CharacterListPresenter: CharacterListPresenterProtocol {
     let interactor: CharacterListInteractorProtocol
     weak var viewController: CharacterListViewProtocol?
     var characters: [Character] = []
     var imageCache: [Int: UIImage] = [:]
-    var countOfPaginations: Int = 2
+    private var countOfPaginations: Int = 2
     
     init(
         interactor: CharacterListInteractorProtocol
     ) {
         self.interactor = interactor
-        
     }
     
     func fetchCharacters() {
         interactor.fetchCharacterList { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let welcome):
-                if self!.countOfPaginations <= welcome.info.pages {
-                    self?.countOfPaginations += 1
-                    self?.characters.append(contentsOf: welcome.results)
-                    self?.viewController?.updateCharacterList(with: welcome.results)
-                    print(self!.countOfPaginations)
-                }
+                self.handleSuccess(response: welcome)
             case .failure(let error):
-                print("falho: \(error)")
-                self?.viewController?.displayError(message: error.localizedDescription)
+                self.handleError(error: error)
             }
         }
+    }
+    
+    private func handleSuccess(response: Welcome) {
+        if countOfPaginations <= response.info.pages {
+            countOfPaginations += 1
+            characters.append(contentsOf: response.results)
+            viewController?.updateCharacterList(with: response.results)
+        }
+    }
+    
+    
+    private func handleError(error: Error) {
+        self.viewController?.displayError(message: error.localizedDescription)
     }
     
     func fetchCharacterImage(for character: Character, completion: @escaping (UIImage?) -> Void) {
@@ -60,9 +72,4 @@ final class CharacterListPresenter: CharacterListPresenterProtocol {
         task.resume()
     }
     
-}
-
-protocol CharacterListPresenterProtocol {
-    func fetchCharacters()
-    func fetchCharacterImage(for character: Character, completion: @escaping (UIImage?) -> Void)
 }

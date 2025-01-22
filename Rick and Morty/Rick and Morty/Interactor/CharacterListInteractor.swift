@@ -5,8 +5,12 @@
 //  Created by Guilherme Ferreira Lenzolari on 10/12/24.
 //
 
+protocol CharacterListInteractorProtocol: AnyObject {
+    func fetchCharacterList(completion: @escaping (Result<Welcome, APIError>) -> Void)
+}
+
 final class CharacterListInteractor: CharacterListInteractorProtocol {
-    private var apiService: APIServiceProtocol
+    var apiService: APIServiceProtocol
     var presenter: CharacterListPresenterProtocol?
     
     init(apiService: APIServiceProtocol = APIService(url: Endpoint.character.rawValue)) {
@@ -28,6 +32,7 @@ final class CharacterListInteractor: CharacterListInteractorProtocol {
     }
 }
 
-protocol CharacterListInteractorProtocol: AnyObject {
-    func fetchCharacterList(completion: @escaping (Result<Welcome, APIError>) -> Void)
+enum Endpoint: String {
+    case character = "https://rickandmortyapi.com/api/character"
 }
+

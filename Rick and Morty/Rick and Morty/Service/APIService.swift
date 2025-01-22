@@ -7,6 +7,11 @@
 
 import Foundation
 
+protocol APIServiceProtocol {
+    func fetchData<T: Codable>(completion: @escaping (Result<T, APIError>) -> ())
+    var urlString: String { get set }
+}
+
 final class APIService: APIServiceProtocol {
     
     init(url: String) {
@@ -43,13 +48,4 @@ final class APIService: APIServiceProtocol {
         }
         task.resume()
     }
-}
-
-protocol APIServiceProtocol {
-    func fetchData<T: Codable>(completion: @escaping (Result<T, APIError>) -> ())
-    var urlString: String { get set }
-}
-
-enum Endpoint: String {
-    case character = "https://rickandmortyapi.com/api/character"
 }

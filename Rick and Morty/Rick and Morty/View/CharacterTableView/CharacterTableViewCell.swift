@@ -42,7 +42,7 @@ class CharacterTableViewCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(systemName: "chevron.right")
-        imageView.tintColor = .gray // Cor padrão do chevron
+        imageView.tintColor = .gray
         return imageView
     }()
     
