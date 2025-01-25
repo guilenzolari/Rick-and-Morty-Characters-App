@@ -12,6 +12,12 @@ protocol APIServiceProtocol {
 }
 
 final class APIService: APIServiceProtocol {
+    
+    private let urlSession: URLSession
+    
+    init(urlSession: URLSession = .shared) {
+        self.urlSession = urlSession
+    }
 
     public func fetchData<T: Codable>(urlString: String, completion: @escaping (Result<T, APIError>) -> () ){
         
@@ -21,7 +27,8 @@ final class APIService: APIServiceProtocol {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        //TODO: Mocar URL session e testá-lo
+        let task = self.urlSession.dataTask(with: url) { data, response, error in
             
             if let error = error as? URLError {
                 completion(Result.failure(APIError.urlSession(error)))

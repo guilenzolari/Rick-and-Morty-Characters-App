@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum APIError: Error, CustomStringConvertible {
+enum APIError: Error, CustomStringConvertible, Equatable {
     
     case badURL
     case urlSession(URLError?)
@@ -42,4 +42,22 @@ enum APIError: Error, CustomStringConvertible {
                 return decodingError?.localizedDescription ?? "something went wrong"
         }
     }
+    
+    static func == (lhs: APIError, rhs: APIError) -> Bool {
+        switch (lhs, rhs) {
+        case (.badURL, .badURL):
+            return true
+        case (.urlSession(let lhsError), .urlSession(let rhsError)):
+            return lhsError == rhsError
+        case (.badResponse(let lhsCode), .badResponse(let rhsCode)):
+            return lhsCode == rhsCode
+        case (.decoding(let lhsDecodingError), .decoding(let rhsDecodingError)):
+            return lhsDecodingError?.localizedDescription == rhsDecodingError?.localizedDescription
+        case (.unknown, .unknown):
+            return true
+        default:
+            return false
+        }
+    }
+    
 }

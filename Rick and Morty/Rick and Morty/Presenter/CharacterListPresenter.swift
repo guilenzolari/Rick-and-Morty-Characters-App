@@ -6,6 +6,7 @@
 //
 import UIKit
 
+//Tudo o que eu for usar em outra classe, vai no protocolo
 protocol CharacterListPresenterProtocol {
     func fetchCharacters()
     func fetchCharacterImage(for character: Character, completion: @escaping (UIImage?) -> Void)
