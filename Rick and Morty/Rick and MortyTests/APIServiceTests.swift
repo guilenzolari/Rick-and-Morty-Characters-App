@@ -11,62 +11,70 @@ import XCTest
 
 final class APIServiceTests: XCTestCase {
     var sut : APIService! //sut = system under test
-
+    
     override func setUp() {
         super.setUp()
         sut = APIService()
     }
-
+    
     override func tearDown() {
         sut = nil
         super.tearDown()
     }
-
-    func testFetchDataSuccess()  {
+    
+    func test_givenApiSuccess_whenFetchCharacterList_shouldReturnWelcome()  {
+        // Given
         let urlString = "https://rickandmortyapi.com/api/character"
+        var expectedResult: Welcome? = nil
         let expectation = expectation(description: "Fetch data success")
         
+        // When
         sut.fetchData(urlString: urlString) { (result: Result<Welcome, APIError>) in
-            switch result {
-            case .success(let welcome):
-                XCTAssertNotNil(welcome)
+            if case .success(let welcome) = result {
+                expectedResult = welcome
                 expectation.fulfill()
-            case .failure(_):
-                XCTFail("Expected success get failure")
             }
         }
+        
+        // Then
         waitForExpectations(timeout: 5)
+        XCTAssertNotNil(expectedResult, "Result should not be nil")
+        
     }
     
-    func testFetchDataFailureWithBadURL() {
+    
+    func test_givenAPIFailure_whenURLIsInvalid_shouldReturnBardUrlError() {
+        // Given
         let urlString = ""
-        let expectation = expectation(description: "fetch data with bad URL")
+        var expectedError: APIError? = nil
         
+        // When
         sut.fetchData(urlString: urlString) { (result: Result<Welcome, APIError>) in
-            switch result {
-            case .success(_):
-                XCTFail("Expected error got success")
-            case .failure(let error):
-                XCTAssertEqual(error, .badURL)
-                expectation.fulfill()
+            if case . failure(let failure) = result {
+                expectedError = failure
             }
         }
-        waitForExpectations(timeout: 5)
+        
+        //Then
+        XCTAssertEqual(expectedError, .badURL)
     }
     
-    func testFetchDataFailureWithInvalidEndpoint() {
+    func test_givenAPIFailure_whenEndpointIsInvalid_shouldReturnBadResponseError() {
+        // Given
         let urlString = "https://rickandmortyapi.com/api/invalid-endpoint"
-        let expectation = expectation(description: "fetch data with bad URL")
+        var expectedError: APIError? = nil
+        let expectation = expectation(description: "Bad response error")
         
+        // When
         sut.fetchData(urlString: urlString) { (result: Result<Welcome, APIError>) in
-            switch result {
-            case .success(_):
-                XCTFail("Expected error got success")
-            case .failure(let error):
-                XCTAssertEqual(error, .badResponse(404))
+            if case .failure(let failure) = result {
+                expectedError = failure
                 expectation.fulfill()
             }
         }
+
+        // Then
         waitForExpectations(timeout: 5)
+        XCTAssertEqual(expectedError, .badResponse(404))
     }
 }

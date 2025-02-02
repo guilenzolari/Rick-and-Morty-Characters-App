@@ -23,21 +23,17 @@ class MockAPIService: APIServiceProtocol {
 }
 
 final class CharacterListInteractorTests: XCTestCase {
-    var interactor: CharacterListInteractor!
+    var sut: CharacterListInteractor!
     var mockAPIService: MockAPIService!
-
-    //Given
-    //When
-    //Them
     
     override func setUp() {
         super.setUp()
         mockAPIService = MockAPIService()
-        interactor = CharacterListInteractor(apiService: mockAPIService)
+        sut = CharacterListInteractor(apiService: mockAPIService)
     }
 
     override func tearDown() {
-        interactor = nil
+        sut = nil
         mockAPIService = nil
         super.tearDown()
     }
@@ -48,7 +44,7 @@ final class CharacterListInteractorTests: XCTestCase {
         mockAPIService.shouldReturnError = false
         
         // When
-        interactor.fetchCharacterList { (result: Result<Welcome, APIError>) in
+        sut.fetchCharacterList { (result: Result<Welcome, APIError>) in
             if case .success(let welcome) = result {
                 expectedResult = welcome
             }
@@ -59,15 +55,19 @@ final class CharacterListInteractorTests: XCTestCase {
     }
     
     func testFetchCharacterListFailure() {
+        //Given
         mockAPIService.shouldReturnError = true
+        var expectedError: APIError? = nil
         
-        interactor.fetchCharacterList { result in
-            switch result {
-            case .success(_):
-                XCTFail("Expected fail, get success")
-            case .failure(let error):
-                XCTAssertEqual(error, .badURL)
+        
+        // When
+        sut.fetchCharacterList { result in
+            if case .failure(let error) = result {
+                expectedError = error
             }
         }
+    
+        // Then
+        XCTAssertEqual(expectedError, .badURL)
     }
 }

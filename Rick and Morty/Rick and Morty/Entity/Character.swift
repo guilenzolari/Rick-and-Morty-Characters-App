@@ -8,7 +8,7 @@ struct Welcome: Equatable, Codable {
 }
 
 extension Welcome {
-    static func stub(
+    static func stub (
         info: Info = .stub(),
         results: [Character] = []
     ) -> Welcome {
@@ -23,7 +23,7 @@ struct Info: Equatable, Codable {
 }
 
 extension Info {
-    static func stub(
+    static func stub (
         count: Int = 0,
         pages: Int = 0,
         next: String? = nil
@@ -56,8 +56,33 @@ struct Character: Equatable, Codable {
         }
 }
 
+extension Character {
+    static func stub(
+        id: Int = 0,
+        name: String = "",
+        status: String = "",
+        species: String = "",
+        type: String = "",
+        gender: String = "",
+        origin: Location = .stub(),
+        location: Location = .stub(),
+        imageUrl: String = ""
+    ) -> Character {
+        return Character(id: id, name: name, status: status, species: species, type: type, gender: gender, origin: origin, location: location, imageURL: imageUrl)
+    }
+}
+
 // MARK: - Location
 struct Location: Equatable, Codable {
     let name: String
     let url: String
+}
+
+extension Location {
+    static func stub(
+        name: String = "",
+        url: String = ""
+    ) -> Location {
+        return Location(name: name, url: url)
+    }
 }

@@ -44,7 +44,7 @@ class MockCacheService: CacheServiceProtocol {
 }
 
 final class CharacterListPresenterTests: XCTestCase {
-    var presenter: CharacterListPresenter!
+    var sut: CharacterListPresenter!
     var mockInteractor: MockCharacterListInteractor!
     var mockCacheService: MockCacheService!
     var mockViewController: MockCharacterListView!
@@ -55,8 +55,8 @@ final class CharacterListPresenterTests: XCTestCase {
         mockInteractor = MockCharacterListInteractor()
         mockCacheService = MockCacheService()
         mockViewController = MockCharacterListView()
-        presenter = CharacterListPresenter(interactor: mockInteractor, cache: mockCacheService)
-        presenter.viewController = mockViewController
+        sut = CharacterListPresenter(interactor: mockInteractor, cache: mockCacheService)
+        sut.viewController = mockViewController
     }
 
     override func tearDown() {
@@ -68,15 +68,15 @@ final class CharacterListPresenterTests: XCTestCase {
 
     func testFetchCharacterSuccess() {
         mockInteractor.shouldReturnError = false
-        presenter.fetchCharacters()
+        sut.fetchCharacters()
         
         XCTAssertTrue(mockViewController.didUpdateCharacterListCalled, "updateCharacterList should be called on success")
-        XCTAssertEqual(presenter.characters.count, 0, "The characters array should be updated correctly")
+        XCTAssertEqual(sut.characters.count, 0, "The characters array should be updated correctly")
     }
     
     func testFetchCharactersFalure() {
         mockInteractor.shouldReturnError = true
-        presenter.fetchCharacters()
+        sut.fetchCharacters()
         
         XCTAssertTrue(mockViewController.didDisplayErrorCalled, "displayError should be called on failure")
     }
@@ -92,7 +92,7 @@ final class CharacterListPresenterTests: XCTestCase {
         
         var fetchedImage: UIImage?
         
-        presenter.fetchCharacterImage(for: character) { image in
+        sut.fetchCharacterImage(for: character) { image in
             fetchedImage = image
         }
         
@@ -107,7 +107,7 @@ final class CharacterListPresenterTests: XCTestCase {
         let expectation = expectation(description: "Invalide URL")
         
         
-        presenter.fetchCharacterImage(for: character) { _ in
+        sut.fetchCharacterImage(for: character) { _ in
             fetchedError = self.mockViewController.didDisplayErrorCalled ? "Error" : "validURL"
             expectation.fulfill()
         }
